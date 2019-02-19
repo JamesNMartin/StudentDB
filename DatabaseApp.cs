@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudentDB
 {
-    class Program
+    class DatabaseApp
     {
         static void Main(string[] args)
         {
