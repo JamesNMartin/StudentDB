@@ -44,8 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseApp.cs" />
+    <Compile Include="Gradstudent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Student.cs" />
+    <Compile Include="Undergrad.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
