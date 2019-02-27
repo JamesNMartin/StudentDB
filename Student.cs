@@ -2,6 +2,7 @@
 //DATE          DEVELOPER          DESCRIPTION 
 //TODO CHNAGE HISTORY
 using System;
+using System.Threading;
 
 namespace StudentDB
 {
@@ -15,10 +16,12 @@ namespace StudentDB
         public decimal GPA { get; set; }
         public int CreditsEarned { get; set; }
 
-
         public Student(string fName, string lName, string email, decimal gpa, int credits)
         {
-            //Random rand = new Random(); // MAYBE USE THIS FOR RANDOM STUDENT ID's
+            Console.WriteLine($"Generating Student ID for {fName} {lName}");
+            Random rand = new Random(); // MAYBE USE THIS FOR RANDOM STUDENT ID's
+            Thread.Sleep(1000);//SINCE RANDOM NUMBERS ARE MADE BASED ON SYSTEM TIME, I FORCE A WAIT OF TWO SECs TO GET A BETTER RANDOM NUMBER THAT ISNT THE SAME.
+            StudentID = rand.Next();
             FirstName = fName;
             LastName = lName;
             EmailAddress = email;
@@ -37,13 +40,13 @@ namespace StudentDB
         public override string ToString()
         {
             string str = string.Empty;
-            str += $"      Student ID: {StudentID}";
+            str += $"     Student ID: {StudentID}";
             str += "\n     First name: " + FirstName;
             str += "\n      Last name: " + LastName;
             str += "\n     Email addr: " + EmailAddress;
             str += "\n       Enrolled: " + EnrollmentDate;
-            str += $"\n           GPA: {GPA}";
-            str += $"\nCredits Earned: {CreditsEarned}";
+            str += $"\n            GPA: {GPA}";
+            str += $"\n Credits Earned: {CreditsEarned}\n";
 
             return str;
         }

@@ -20,5 +20,33 @@ namespace StudentDB
         {
             YearRank = rank;
         }
+        public override string ToString()
+        {
+            string str = string.Empty;
+            str += $"     Student ID: {StudentID}";
+            str += "\n     First name: " + FirstName;
+            str += "\n      Last name: " + LastName;
+            str += "\n     Email addr: " + EmailAddress;
+            str += "\n       Enrolled: " + EnrollmentDate;
+            str += $"\n            GPA: {GPA}";
+            str += $"\n Credits Earned: {CreditsEarned}";
+            str += $"\n       Year rank: {YearRank}\n";
+
+            return str;
+        }
+        public string ToStringFileFormat()
+        {
+            string str = string.Empty;
+            str += $"{StudentID}";
+            str += "\n" + FirstName;
+            str += "\n" + LastName;
+            str += "\n" + EmailAddress;
+            str += "\n" + EnrollmentDate;
+            str += $"\n{GPA}";
+            str += $"\n{CreditsEarned}";
+            str += $"\n{YearRank}";
+
+            return str;
+        }
     }
 }
