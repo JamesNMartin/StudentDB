@@ -13,7 +13,7 @@ namespace StudentDB
 {
     public class Undergrad : Student
     {
-        public string YearRank { get; set; }
+        public virtual string YearRank { get; set; }
 
         public Undergrad (string fName, string lName, string email, decimal gpa, int credits, string rank) 
             : base(fName, lName, email, gpa, credits)
@@ -21,20 +21,6 @@ namespace StudentDB
             YearRank = rank;
         }
         public override string ToString()
-        {
-            string str = string.Empty;
-            str += $"     Student ID: {StudentID}";
-            str += "\n     First name: " + FirstName;
-            str += "\n      Last name: " + LastName;
-            str += "\n     Email addr: " + EmailAddress;
-            str += "\n       Enrolled: " + EnrollmentDate;
-            str += $"\n            GPA: {GPA}";
-            str += $"\n Credits Earned: {CreditsEarned}";
-            str += $"\n       Year rank: {YearRank}\n";
-
-            return str;
-        }
-        public string ToStringFileFormat()
         {
             string str = string.Empty;
             str += $"{StudentID}";
@@ -45,6 +31,20 @@ namespace StudentDB
             str += $"\n{GPA}";
             str += $"\n{CreditsEarned}";
             str += $"\n{YearRank}";
+
+            return str;
+        }
+        public override string ToStringForConsole()
+        {
+            string str = string.Empty;
+            str += $"     Student ID: {StudentID}";
+            str += "\n     First name: " + FirstName;
+            str += "\n      Last name: " + LastName;
+            str += "\n     Email addr: " + EmailAddress;
+            str += "\n       Enrolled: " + EnrollmentDate;
+            str += $"\n            GPA: {GPA}";
+            str += $"\n Credits Earned: {CreditsEarned}";
+            str += $"\n      Year rank: {YearRank}\n";
 
             return str;
         }

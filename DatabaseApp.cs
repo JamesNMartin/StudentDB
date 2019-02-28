@@ -16,18 +16,15 @@ namespace StudentDB
         // info about the List class in the FCL chapter 9
         // actual storage for the students in the DB
         private List<Student> students = new List<Student>();
-
         static void Main(string[] args)
         {
             DatabaseApp dbApp = new DatabaseApp();
         }
-
         public DatabaseApp()
         {
             UserInterface();
             GoDatabase();
         }
-
         private void UserInterface()
         {
             Console.WriteLine(@"
@@ -51,7 +48,6 @@ namespace StudentDB
 ** [S]ave the database
 ** [Q]uit the application
 ");
-
         }        
         private void GoDatabase()
         {
@@ -65,7 +61,7 @@ namespace StudentDB
                 switch (selection)
                 {
                     case 'P':
-                        //WriteDataToConsole();
+                        WriteDataToConsole();
                         WriteDataToOutputFile();
                         //PrintAllRecords();
                         break;
@@ -75,10 +71,10 @@ namespace StudentDB
                     case 'F':
                         FindRecord();
                         break;
-                    case 'U'://TODO UPDATE RECORD
+                    case 'U':
                         UpdateRecord();
                         break;
-                    case 'D'://TODO DELETE RECORD
+                    case 'D':
                         DeleteRecord();
                         break;
                     case 'Q':
@@ -92,38 +88,80 @@ namespace StudentDB
                 }
             }
         }
-
         private void DeleteRecord()
         {
-            
+            while (true)
+            {
+                Console.Write("Enter the last name of the record you would like to delete: ");
+                string searchTerm = Console.ReadLine();
+
+                var foundRecord = students.FirstOrDefault(lookup => lookup.LastName.TrimEnd() == searchTerm); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
+                int foundRecordIndex = students.FindIndex(lookup => lookup.LastName == searchTerm); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
+
+                if (foundRecord != null)
+                {
+                    //RECORD FOUND
+                    Console.WriteLine($"\n** Displaying record for {foundRecord.FirstName} {foundRecord.LastName} **\n");
+                    //Console.WriteLine($"Record Index: {recordIndex}");
+                    Console.WriteLine(foundRecord.ToStringForConsole());
+                    Console.WriteLine($"Would you like to delete this record?");//prompt user if they want
+                    Console.Write("[Y]es [N]o: ");
+                    char selection = char.Parse(Console.ReadLine());
+                    if (selection == 'Y')
+                    {
+                        students.RemoveAt(foundRecordIndex);
+                        Console.WriteLine($"\n** {foundRecord.FirstName} {foundRecord.LastName} was deleted from the database. **");
+                        Thread.Sleep(1000);
+                        break;
+                        //EDIT RECORD
+                    }
+                    else if (selection == 'N')
+                    {
+                        break;
+                        //NO EDIT
+                    }
+                }
+                else
+                {
+                    break;
+                    //RECORD NOT FOUND
+                } 
+            }
         }
         private void UpdateRecord()
         {
-
+            FindRecord();
         }
         private void UpdateRecord(int index)
         {
-            string newFirstName = students[index].FirstName;
-            string newLastName = students[index].LastName;
-            string newEmail = students[index].EmailAddress;
-            int newStudentID = students[index].StudentID;
-            decimal newGPA = students[index].GPA;
-            int newCreditsEarned = students[index].CreditsEarned;
+            var theStudent = students[index];//Make the student at the specific index a var 
+
+            //MAKING A COPY OF THE STUDENT TO HOLD JUST IN CASE THE USER UPDATES ONE PIECE OF THE RECORD
+            string newFirstName = theStudent.FirstName;
+            string newLastName = theStudent.LastName;
+            string newEmail = theStudent.EmailAddress;
+            int newStudentID = theStudent.StudentID;
+            decimal newGPA = theStudent.GPA;
+            int newCreditsEarned = theStudent.CreditsEarned;
 
             while (true)
             {
-
                 //DisplayEditMenu(index);
+                /*
+                 * THE LINE BELOW THAT PRINTS "CURRENTLY EDITTING" WILL DISPALAY WHAT THE RECORD IS UNTIL IT IS SAVED
+                 * THE VALUES NEXT TO THE OPTIONS WILL CHANGE BASED ON WHAT YOU JUST CHANGED. 
+                 * THEY WILL NOT SAVE UNTIL YOU QUIT AND SAVE AND THE VALUES WILL BE UPDATED.
+                 */
                 Console.WriteLine($@"
 *************** Edit menu ***************
 
-Currently Editting: {students[index].FirstName} {students[index].LastName}
+Currently Editting: {theStudent.FirstName} {theStudent.LastName} 
 
-[S]tudent ID: {newStudentID}
-[F]irst Name: {newFirstName}
-[L]ast Name: {newLastName}
-[E]mail Address: {newEmail}
-[G]PA: {newGPA}
+[S]tudent ID:     {newStudentID}
+[F]irst Name:     {newFirstName}
+[L]ast Name:      {newLastName}
+[E]mail Address:  {newEmail}
+[G]PA:            {newGPA}
 [C]redits Earned: {newCreditsEarned}
 
 [X]Cancel
@@ -134,22 +172,21 @@ Currently Editting: {students[index].FirstName} {students[index].LastName}
                 char selection = char.Parse(Console.ReadLine());
                 if (selection == 'Q')//Quitting the edit menu and saving all the new values.
                 {
-                    students[index].FirstName = newFirstName;
-                    students[index].LastName = newLastName;
-                    students[index].EmailAddress = newEmail;
-                    students[index].StudentID = newStudentID;
-                    students[index].GPA = newGPA;
-                    students[index].CreditsEarned = newCreditsEarned;
+                    theStudent.FirstName = newFirstName;
+                    theStudent.LastName = newLastName;
+                    theStudent.EmailAddress = newEmail;
+                    theStudent.StudentID = newStudentID;
+                    theStudent.GPA = newGPA;
+                    theStudent.CreditsEarned = newCreditsEarned;
 
                     break;
                 }
                 else if (selection == 'X')
                 {
-                    Console.WriteLine("Cancelling...");
+                    //Console.WriteLine("Cancelling...");
                     break;
 
                 }
-
                 switch (selection)
                 {
                     case 'S':
@@ -187,7 +224,6 @@ Currently Editting: {students[index].FirstName} {students[index].LastName}
                  * [C]redits Earned: */
             }
         }
-
         private void FindRecord()
         {
             while (true)
@@ -197,24 +233,23 @@ Currently Editting: {students[index].FirstName} {students[index].LastName}
                 string searchTerm = Console.ReadLine();//TODO MAKE IT SO YOU DONT HAVE TO MATCH CASE WHEN SEARCHING
 
                 // FOUND THIS CODE HERE https://stackoverflow.com/questions/3154310/search-list-of-objects-based-on-object-variable
-                var foundRecord = students.FirstOrDefault(lookup => lookup.LastName == searchTerm); // USING THE SEARCH TERM FROM USER TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
-                var recordIndex = students.FindIndex(lookup => lookup.LastName == searchTerm); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
+                var foundRecord = students.FirstOrDefault(lookup => lookup.LastName.TrimEnd() == searchTerm); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
+                int foundRecordIndex = students.FindIndex(lookup => lookup.LastName == searchTerm); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
 
                 if (foundRecord != null)//if the record is found we display it to the console.
                 {
                     Console.WriteLine($"\n** Displaying record for {foundRecord.FirstName} {foundRecord.LastName} **\n");
                     //Console.WriteLine($"Record Index: {recordIndex}");
-                    Console.WriteLine(foundRecord.ToString());
-                    Console.WriteLine($"Would you like to edit this record?");//prompt user if they want
+                    Console.WriteLine(foundRecord.ToStringForConsole());
+                    Console.WriteLine($"Would you like to edit this record?");
                     Console.Write("[Y]es [N]o: ");
 
                     char selection = char.Parse(Console.ReadLine());
                     if (selection == 'Y')
                     {
-                        UpdateRecord(recordIndex);
+                        UpdateRecord(foundRecordIndex);
                         break;
                         //EDIT RECORD
-
                     }
                     else if (selection == 'N')
                     {
@@ -226,14 +261,9 @@ Currently Editting: {students[index].FirstName} {students[index].LastName}
                 {
                     Console.WriteLine("Record not found");
                     break;
-
                 }
-
-
             }
-
         }
-
         private void CreateRecord()
         {
             Console.WriteLine("Let's gather some information");
@@ -264,7 +294,7 @@ Credits earned: {earnedCredits}
 ");
             Console.Write(@"[Y]es [N]o: ");
             char selection = char.Parse(Console.ReadLine());
-            if (selection == 'Y')//TODO MAYBE MAKE THIS A SWITCH STATEMENT?
+            if (selection == 'Y')
             {
                 Student createdStudent = new Student(firstName, lastName, email, gpa, earnedCredits);
                 students.Add(createdStudent);
@@ -272,7 +302,7 @@ Credits earned: {earnedCredits}
 
                 Thread.Sleep(1000);
                 /* Sleep for 1 seconds. I did this to delay the main menu popping in
-                 * and missing the prompt saying that it was added successfully.
+                 * and missing the prompt saying that it was removed successfully.
                  */
             }
             else if (selection == 'N')
@@ -288,7 +318,7 @@ Credits earned: {earnedCredits}
             StreamWriter outfile = new StreamWriter("STUDENT_DATABASE_OUTPUT_FILE.txt");
             for (int i = 0; i < students.Count; i++)
             {
-                outfile.WriteLine(students[i].ToStringFileFormat());
+                outfile.WriteLine(students[i].ToString());
             }
             outfile.Close();
         }
@@ -296,7 +326,7 @@ Credits earned: {earnedCredits}
         {
             for (int i = 0; i < students.Count; i++)
             {
-                Console.WriteLine((students[i].ToStringFileFormat()));
+                Console.WriteLine((students[i].ToStringForConsole()));
             }
         }
         private void PrintAllRecords()
@@ -315,21 +345,30 @@ Credits earned: {earnedCredits}
         public void TestMain()
         {
             // make some objects of type Student
-            Student stu01 = new Student("Alice", "Anderson", "aanderson@uw.edu", 3.0m, 90);
-            Student stu02 = new Student("Bob", "Bradshaw", "BBradshaw@uw.edu", 4.0m, 80);
-            Undergrad und01 = new Undergrad("Bill", "McPoop", "fun@gmail.com", 4.0m, 90, "Senior");
-            //Student stu03 = new Student();
+            Student stu01 = new Student("Alice", "Anderson", "aanderson@uw.edu", 3.5m, 90);
+            Student stu02 = new Student("Bob", "Bradshaw", "BBradshaw@uw.edu", 4.0m, 100);
+            Student stu03 = new Student("Steve", "Billman", "SteveBill@uw.edu", 3.0m, 50);
+            Student stu04 = new Student("Bob", "Bobman", "BBobman@uw.edu", 2.8m, 35);
 
+            Undergrad und01 = new Undergrad("Fred", "Fredson", "Fredson@gmail.com", 1.0m, 30, "Freshman");
+            Undergrad und02 = new Undergrad("Mike", "Mikeson", "Mikeson@gmail.com", 2.0m, 50, "Sophomore");
+            Undergrad und03 = new Undergrad("Rick", "Rickson", "Rickson@gmail.com", 3.0m, 70, "Junior");
+            Undergrad und04 = new Undergrad("Tim", "Timson", "Timson@gmail.com", 4.0m, 90, "Senior");
+
+            //Student stu03 = new Student();
             // mutate the objects in some way
             //stu03.FirstName = "Chuck";
             //stu03.LastName = "Costarella";
             //stu03.EmailAddress = "costarec@uw.edu";
-
             students.Add(stu01);
             students.Add(stu02);
+            students.Add(stu03);
+            students.Add(stu04);
             students.Add(und01);
+            students.Add(und02);
+            students.Add(und03);
+            students.Add(und04);
             //students.Add(stu03);
-
             // display the data in the objects (easily)
             //Console.WriteLine(stu01);
             //Console.WriteLine(stu02);
