@@ -16,6 +16,7 @@ namespace StudentDB
         public decimal GPA { get; set; }
         public int CreditsEarned { get; set; }
 
+
         public Student(string fName, string lName, string email, decimal gpa, int credits)
         {
             Console.WriteLine($"Generating Student ID for {fName} {lName}");
@@ -28,7 +29,7 @@ namespace StudentDB
             EnrollmentDate = DateTime.Now;
             GPA = gpa;
             CreditsEarned = credits;
-            
+
         }
 
         // replace the default ctor with our own default
@@ -53,7 +54,7 @@ namespace StudentDB
         public virtual string ToStringForConsole()
         {
             string str = string.Empty;
-            str += $"     Student ID: {StudentID}";
+            str += $"    Student ID: {StudentID}";
             str += "\n     First name: " + FirstName;
             str += "\n      Last name: " + LastName;
             str += "\n     Email addr: " + EmailAddress;
