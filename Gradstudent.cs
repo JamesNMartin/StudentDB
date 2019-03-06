@@ -39,11 +39,11 @@ namespace StudentDB
         public override string ToStringForConsole()
         {
             string str = string.Empty;
-            str += $"         Student ID: {StudentID}";
-            str += "\n         First name: " + FirstName;
-            str += "\n          Last name: " + LastName;
-            str += "\n         Email addr: " + EmailAddress;
-            str += "\n           Enrolled: " + EnrollmentDate;
+            str += $"        Student ID: {StudentID}";
+            str += "\n        First name: " + FirstName;
+            str += "\n         Last name: " + LastName;
+            str += "\n        Email addr: " + EmailAddress;
+            str += "\n          Enrolled: " + EnrollmentDate;
             str += $"\n               GPA: {GPA}";
             str += $"\n    Credits Earned: {CreditsEarned}";
             str += $"\nAdvisor First Name: {AdvisorFirstName}";

@@ -38,9 +38,10 @@ namespace StudentDB
         }
         public void DisplayMainMenu()
         {
-            Console.WriteLine(@"
+            int studentCount = students.Count();
+            Console.WriteLine($@"
 *************** Main menu ***************
-** [P]rint all records
+** [P]rint all records - {studentCount} record(s)
 ** [C]reate Record
 ** [F]ind a Record
 ** [U]pdate Record
@@ -52,7 +53,6 @@ namespace StudentDB
         private void GoDatabase()
         {
             //TODO FIX ReadDataFromInputFile
-
             //ReadDataFromInputFile();
             while (true)
             {
@@ -66,8 +66,9 @@ namespace StudentDB
                 {
                     case 'P':
                     case 'p':
+                        //GetIndexFromList();
                         WriteDataToConsole();
-                        WriteDataToOutputFile();
+                        //WriteDataToOutputFile();
                         //PrintAllRecords();
                         break;
                     case 'C':
@@ -108,6 +109,18 @@ namespace StudentDB
                 Console.WriteLine($"{i} :: {students[i].EmailAddress}");
             }
         }
+        private bool CheckDatabaseForRecord(string search)
+        {
+            var foundRecord = (students.FirstOrDefault(lookup => lookup.EmailAddress.Equals(search, StringComparison.InvariantCultureIgnoreCase)));
+            if (foundRecord != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private void ReadDataFromInputFile()
         {
             //CONSTRUCT AN OBJECT CONNECTED TO THE INPUT FILE
@@ -121,9 +134,6 @@ namespace StudentDB
                 string lastName = inFile.ReadLine();
                 string emailAddress = inFile.ReadLine();
                 DateTime enrolled = DateTime.Parse(inFile.ReadLine());
-                //NEED TO MAKE A NEW CTOR FOR THE FILE INPUT
-
-
             }
             //CLOSE THE FILE
             inFile.Close();
@@ -140,10 +150,10 @@ namespace StudentDB
                 // I used this link to help me search and ignore the case of the letters
                 // https://stackoverflow.com/questions/6371150/comparing-two-strings-ignoring-case-in-c-sharp
 
-                Console.Write("Enter the last name of the record you would like to delete: ");
+                Console.Write("Enter the email address of the record you would like to delete: ");
                 string searchTerm = Console.ReadLine();
-                var foundRecord = (students.FirstOrDefault(lookup => lookup.LastName.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase))); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
-                int foundRecordIndex = students.FindIndex(lookup => lookup.LastName.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
+                var foundRecord = (students.FirstOrDefault(lookup => lookup.EmailAddress.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase))); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
+                int foundRecordIndex = students.FindIndex(lookup => lookup.EmailAddress.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
 
                 if (foundRecord != null)
                 {
@@ -158,7 +168,7 @@ namespace StudentDB
                     if (selection.KeyChar == 'Y' || selection.KeyChar == 'y')
                     {
                         students.RemoveAt(foundRecordIndex);
-                        Console.WriteLine($"\n** {foundRecord.FirstName} {foundRecord.LastName} was deleted from the database. **");
+                        Console.WriteLine($"\n\n** {foundRecord.FirstName} {foundRecord.LastName} was deleted from the database. **");
                         Thread.Sleep(1000);
                         break;
                         //EDIT RECORD
@@ -175,6 +185,13 @@ namespace StudentDB
                     //RECORD NOT FOUND
                 }
             }
+        }
+        private void DeleteRecord(int index)
+        {
+            //TODO Prompt user if they are sure they want to delete 
+            Console.WriteLine($"\n\n** {students[index].FirstName} {students[index].LastName} was removed from the database. **");
+            students.RemoveAt(index);
+            Thread.Sleep(1000);
         }
         private void UpdateRecord()
         {
@@ -213,6 +230,7 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
 [C]redits Earned: {newCreditsEarned}
 
 [X]Cancel
+[D]elete
 [Q]uit and Save
 ");
                 Console.WriteLine("What would you like to update? ");
@@ -234,6 +252,12 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
                 else if (selection.KeyChar == 'X' || selection.KeyChar == 'x')
                 {
                     //Console.WriteLine("Cancelling...");
+                    break;
+                }
+                else if (selection.KeyChar == 'D' || selection.KeyChar == 'd')
+                {
+                    DeleteRecord(index);
+
                     break;
                 }
                 switch (selection.KeyChar)
@@ -269,6 +293,8 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
                         newCreditsEarned = int.Parse(Console.ReadLine());
                         break;
                     default:
+                        Console.WriteLine("** ERROR: Incorrect selection. Please try again **");
+                        Thread.Sleep(1000);// Sleep so the user can see the error message
                         break;
                 }
                 /* [S]tudent ID:
@@ -284,12 +310,12 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
             while (true)
             {
                 //Get the search term they want using last name for lookup.
-                Console.Write("\nPlease enter the last name of the person you're trying to find: ");
+                Console.Write("\nPlease enter the email address of the person you're trying to find: ");
                 string searchTerm = Console.ReadLine();
 
                 // FOUND THIS CODE HERE https://stackoverflow.com/questions/3154310/search-list-of-objects-based-on-object-variable
-                var foundRecord = students.FirstOrDefault(lookup => lookup.LastName.TrimEnd().Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
-                int foundRecordIndex = students.FindIndex(lookup => lookup.LastName.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
+                var foundRecord = students.FirstOrDefault(lookup => lookup.EmailAddress.TrimEnd().Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // USING THE SEARCH TERM FROM USER  TO LOOKUP IF THERE IS A RECORD OF THAT PERSON BY LAST NAME.
+                int foundRecordIndex = students.FindIndex(lookup => lookup.EmailAddress.Equals(searchTerm, StringComparison.InvariantCultureIgnoreCase)); // GETTING THE INDEX OF THE RECORD THAT WAS SEARCHED TO USE FOR FURTHER MANIPULATION
 
                 if (foundRecord != null)//if the record is found we display it to the console.
                 {
@@ -354,18 +380,26 @@ Credits earned: {earnedCredits}
             //char selection = char.Parse(Console.ReadLine());
             if (selection.KeyChar == 'Y' || selection.KeyChar == 'y')
             {
-                Student createdStudent = new Student(firstName, lastName, email, gpa, earnedCredits);
-                students.Add(createdStudent);
-                Console.WriteLine($"\n** {firstName} {lastName} was added to the database. **");
-
-                Thread.Sleep(1000);
+                if (CheckDatabaseForRecord(email) == true)// True means the record is already in the database.
+                {
+                    //TODO Handle this with a bit more grace
+                    Console.WriteLine("\nRecord already on file");
+                }
+                else if (CheckDatabaseForRecord(email) == false)// False means the record does not exsist in the database
+                {
+                    Student createdStudent = new Student(firstName, lastName, email, gpa, earnedCredits);
+                    students.Add(createdStudent);
+                    Console.WriteLine($"\n\n** {firstName} {lastName} was added to the database. **");
+                    Console.WriteLine($@"Your student ID is: {createdStudent.StudentID}");
+                    Thread.Sleep(1000);
+                }
                 /* Sleep for 1 seconds. I did this to delay the main menu popping in
                  * and missing the prompt saying that it was removed successfully.
                  */
             }
             else if (selection.KeyChar == 'N' || selection.KeyChar == 'n')
             {
-                //TODO Make this fuction better. Maybe add the incorrect record but then call updated to edit and save it?
+                //TODO Make this fuction better. Maybe add the incorrect record but then call update to edit and resave it?
                 Console.WriteLine("\n");
                 CreateRecord();
             }

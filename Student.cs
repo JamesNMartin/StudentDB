@@ -19,8 +19,8 @@ namespace StudentDB
 
         public Student(string fName, string lName, string email, decimal gpa, int credits)
         {
-            Console.WriteLine($"Generating Student ID for {fName} {lName}");
-            Random rand = new Random(); // MAYBE USE THIS FOR RANDOM STUDENT ID's
+            //Console.WriteLine($"Generating Student ID for {fName} {lName}");
+            Random rand = new Random(); // Not sure how you wanted to enter student IDs. I just made them random numbers.
             Thread.Sleep(1000);//SINCE RANDOM NUMBERS ARE MADE BASED ON SYSTEM TIME, I FORCE A WAIT OF ONE SEC TO GET A BETTER RANDOM NUMBER THAT ISNT THE SAME.
             StudentID = rand.Next();
             FirstName = fName;
@@ -29,7 +29,6 @@ namespace StudentDB
             EnrollmentDate = DateTime.Now;
             GPA = gpa;
             CreditsEarned = credits;
-
         }
 
         // replace the default ctor with our own default
