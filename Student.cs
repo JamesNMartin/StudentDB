@@ -57,6 +57,7 @@ namespace StudentDB
             //Random rand = new Random(); // Not sure how you wanted to enter student IDs. I just made them random numbers.
             //Thread.Sleep(1000);//SINCE RANDOM NUMBERS ARE MADE BASED ON SYSTEM TIME, I FORCE A WAIT OF ONE SEC TO GET A BETTER RANDOM NUMBER THAT ISNT THE SAME.
             StudentID = id;
+            Count = StudentID; // This should make the counter for ID numbers keep going after file import.
             FirstName = fName;
             LastName = lName;
             EmailAddress = email;
@@ -67,7 +68,8 @@ namespace StudentDB
         public override string ToString()
         {
             string str = string.Empty;
-            str += $"{StudentID}";
+            str += "STUDENT";
+            str += $"\n{StudentID}";
             str += "\n" + FirstName;
             str += "\n" + LastName;
             str += "\n" + EmailAddress;

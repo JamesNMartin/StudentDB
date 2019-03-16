@@ -70,10 +70,9 @@ database to have it store the file. Using C for manual creation will walk you th
 making the student however, when you save the record it will also in turn write it to disk as well. 
 Inside your debug folder there will be a file called: STUDENT_DATABASE_OUTPUT_FILE.txt. This contains
 all the records in the database you have created or otherwise. This data is less human readable than the
-console counterpart due to it also being the input file. (Which isnt complete in this assignment)
+console counterpart due to it also being the input file.
 
 NOTE: T or t will populate the database with 4 of each type of student. (Student, Undergrad, Gradstudent)
-NOTE: Reading in a file WILL NOT WORK.
 ");
         }
         //FUNCTIONS - DisplayMainMenu fuctions as a way to create and display a menu to the user in a meaningful way. 
@@ -119,7 +118,10 @@ NOTE: Reading in a file WILL NOT WORK.
                         break;
                     case 'I':
                     case 'i':
+                        Console.Write("Importing data...");
                         ReadDataFromInputFile();
+                        Thread.Sleep(700);
+                        Console.WriteLine("Done!");
                         break;
                     case 'C':
                     case 'c':
@@ -167,17 +169,78 @@ NOTE: Reading in a file WILL NOT WORK.
         //POSTCONDITIONS - You will have to have read/write on file close or I would imagine it would not save correctly.
         private void ReadDataFromInputFile()
         {
+            string filepath = "STUDENT_DATABASE_INPUT_FILE.txt";
+           
             //CONSTRUCT AN OBJECT CONNECTED TO THE INPUT FILE
-            StreamReader inFile = new StreamReader("STUDENT_DATABASE_INPUT_FILE");
-            //READ THE DATA IN FROM THE FILE AND STORE IT IN THE LIST
-            string str = string.Empty;
-            while ((str = inFile.ReadLine()) != null)
+            StreamReader inFile = new StreamReader(filepath);
+            
+            // Count the lines in the document.
+            int lineCount = File.ReadLines(filepath).Count();
+
+            for (int i = 0; i < lineCount; i++)
             {
-                int id = int.Parse(str);
-                string firstName = inFile.ReadLine();
-                string lastName = inFile.ReadLine();
-                string emailAddress = inFile.ReadLine();
-                DateTime enrolled = DateTime.Parse(inFile.ReadLine());
+                // Assuming the input file is the correct format, this readline should only have one of three values
+                // STUDENT, UNDERGRAD, GRADSTUDENT.
+                string studentCheck = inFile.ReadLine();
+
+                if (studentCheck == "STUDENT")
+                {
+                    int id = int.Parse(inFile.ReadLine());
+                    string firstName = inFile.ReadLine();
+                    string lastName = inFile.ReadLine();
+                    string emailAddress = inFile.ReadLine();
+                    DateTime enrolled = DateTime.Parse(inFile.ReadLine());
+                    // Make the student
+                    Student importedStudent = new Student(id, firstName, lastName, emailAddress, enrolled);
+                    // Add the student
+                    students.Add(importedStudent);                  
+                }
+                else if (studentCheck == "UNDERGRAD")
+                {
+                    int id = int.Parse(inFile.ReadLine());
+                    string firstName = inFile.ReadLine();
+                    string lastName = inFile.ReadLine();
+                    string emailAddress = inFile.ReadLine();
+                    DateTime enrolled = DateTime.Parse(inFile.ReadLine());
+                    float gpa = float.Parse(inFile.ReadLine());            
+                    string stringRank = inFile.ReadLine();
+                    YearRank rank = YearRank.Empty;
+
+                    if (stringRank.Equals("Freshman"))
+                    {
+                        rank = YearRank.Freshman;
+                    }
+                    else if (stringRank.Equals("Sophomore"))
+                    {
+                        rank = YearRank.Sophomore;
+                    }
+                    else if (stringRank.Equals("Junior"))
+                    {
+                        rank = YearRank.Junior;
+                    }
+                    else if (stringRank.Equals("Senior"))
+                    {
+                        rank = YearRank.Senior;
+                    }
+                    // Make the student
+                    Student importedUndergrad = new Undergrad(id, firstName, lastName, emailAddress, enrolled, gpa, rank);
+                    // Adding the student
+                    students.Add(importedUndergrad);                   
+                }
+                else if (studentCheck == "GRADSTUDENT")
+                {
+                    int id = int.Parse(inFile.ReadLine());
+                    string firstName = inFile.ReadLine();
+                    string lastName = inFile.ReadLine();
+                    string emailAddress = inFile.ReadLine();
+                    DateTime enrolled = DateTime.Parse(inFile.ReadLine());
+                    string advisor = inFile.ReadLine();
+                    decimal tuitionCredit = decimal.Parse(inFile.ReadLine());
+                    // Make the student
+                    Student importedGradstudent = new Gradstudent(id, firstName, lastName, emailAddress, enrolled, advisor, tuitionCredit);
+                    // Add the student
+                    students.Add(importedGradstudent);                 
+                }
             }
             //CLOSE THE FILE
             inFile.Close();
@@ -218,12 +281,14 @@ NOTE: Reading in a file WILL NOT WORK.
                     }
                     else if (selection.KeyChar == 'N' || selection.KeyChar == 'n')
                     {
+                        Console.WriteLine();
                         break;
                         // NO DELETE
                     }
                 }
                 else
                 {
+                    Console.WriteLine("Record not found");
                     break;
                 }
             }
@@ -581,16 +646,16 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
                             Console.Write("\nEnter new email: ");
                             newEmail = Console.ReadLine();
                             break;
-                        case 'G':
-                        case 'g':
+                        //case 'G':
+                        //case 'g':
                             //Console.Write("Enter new GPA: ");
                             //newGPA = float.Parse(Console.ReadLine());
-                            break;
-                        case 'C':
-                        case 'c':
+                        //    break;
+                        //case 'C':
+                        //case 'c':
                             //Console.Write("Enter new credits earned: ");
                             //newCreditsEarned = int.Parse(Console.ReadLine());
-                            break;
+                            //break;
                         default:
                             Console.WriteLine("** ERROR: Incorrect selection. Please try again **");
                             Thread.Sleep(1000);// Sleep so the user can see the error message
@@ -691,6 +756,7 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
 
                     do
                     {
+                        stuEmailBool = false;
                         Console.Write("\nPlease enter an email address you would like to use: ");
                         stuEmail = Console.ReadLine();
 
@@ -754,6 +820,7 @@ Does this information look correct?
 
                     do
                     {
+                        undEmailBool = false;
                         Console.Write("\nPlease enter an email address you would like to use: ");
                         undEmail = Console.ReadLine();
 
@@ -854,6 +921,7 @@ Does this information look correct?
 
                     do
                     {
+                        grdEmailBool = false;
                         Console.Write("\nPlease enter an email address you would like to use: ");
                         grdEmail = Console.ReadLine();
 

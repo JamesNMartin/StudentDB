@@ -68,7 +68,8 @@ namespace StudentDB
         public override string ToString()
         {
             string str = string.Empty;
-            str += $"{StudentID}";
+            str += "UNDERGRAD";
+            str += $"\n{StudentID}";
             str += "\n" + FirstName;
             str += "\n" + LastName;
             str += "\n" + EmailAddress;
