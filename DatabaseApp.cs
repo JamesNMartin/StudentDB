@@ -31,9 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace StudentDB
 {
@@ -169,7 +167,7 @@ NOTE: T or t will populate the database with 4 of each type of student. (Student
         //POSTCONDITIONS - You will have to have read/write on file close or I would imagine it would not save correctly.
         private void ReadDataFromInputFile()
         {
-            string filepath = "STUDENT_DATABASE_INPUT_FILE.txt";
+            string filepath = "STUDENT_DATABASE_OUTPUT_FILE.txt";
            
             //CONSTRUCT AN OBJECT CONNECTED TO THE INPUT FILE
             StreamReader inFile = new StreamReader(filepath);
@@ -239,7 +237,30 @@ NOTE: T or t will populate the database with 4 of each type of student. (Student
                     // Make the student
                     Student importedGradstudent = new Gradstudent(id, firstName, lastName, emailAddress, enrolled, advisor, tuitionCredit);
                     // Add the student
-                    students.Add(importedGradstudent);                 
+                    students.Add(importedGradstudent);
+                }
+                else if (studentCheck == "PHDSTUDENT")
+                {
+                    int id = int.Parse(inFile.ReadLine());
+                    string firstName = inFile.ReadLine();
+                    string lastName = inFile.ReadLine();
+                    string emailAddress = inFile.ReadLine();
+                    DateTime enrolled = DateTime.Parse(inFile.ReadLine());
+                    string advisor = inFile.ReadLine();
+                    decimal tuitionCredit = decimal.Parse(inFile.ReadLine());
+                    string thesis = inFile.ReadLine();
+
+                    //Dissertation Deadline (datetime)
+                    inFile.ReadLine();// These variables are in the input but the dates are calculated not stored. Using readline to advance to next line.
+                    //Days until deadline (double)
+                    inFile.ReadLine();// These variables are in the input but the dates are calculated not stored. Using readline to advance to next line.
+
+                    int journalPub = int.Parse(inFile.ReadLine());
+                    int pubAsAuthor = int.Parse(inFile.ReadLine());
+                    // Make the student
+                    Student importedPhDStudent = new PhDStudent(id, firstName, lastName, emailAddress, enrolled, advisor, tuitionCredit, thesis, journalPub, pubAsAuthor);
+                    // Add the student
+                    students.Add(importedPhDStudent);
                 }
             }
             //CLOSE THE FILE
@@ -326,11 +347,11 @@ NOTE: T or t will populate the database with 4 of each type of student. (Student
         //POSTCONDITIONS - 
         private void UpdateRecord(int index)
         {
+            // Casting as an Undergrad so I can use the get / set for Undergrad
             // If statement to see of the student is a Student, Undergrad, or Gradstudent. 
             // Doing this so that I can use all the get / set options for each student.
-            if (students[index] is Undergrad)// Chuck told me about the is and as. This works far better then the convoluted way I tried farther down.
+            if (students[index] is Undergrad theUndergradStudent)// Chuck told me about the is and as. This works far better then the convoluted way I tried farther down. (UPDATED TO USE PATTERN MATCHING)
             {
-                var theUndergradStudent = (Undergrad)students[index]; // Casting as an Undergrad so I can use the get / set for Undergrad
                 // Making a defensive copy of the current record in the event that the user only updates one field.
                 // This way all the data isnt wiped out when saved.
                 string newFirstName = theUndergradStudent.FirstName;
@@ -422,7 +443,7 @@ Currently Editting: {theUndergradStudent.FirstName} {theUndergradStudent.LastNam
                             break;
                         case 'Y':
                         case 'y':
-                            Console.WriteLine("\n" +@"
+                            Console.WriteLine("\n" + @"
 [1] - Freshman
 [2] - Sophomore
 [3] - Junior
@@ -460,10 +481,10 @@ Currently Editting: {theUndergradStudent.FirstName} {theUndergradStudent.LastNam
                      * [C]redits Earned: */
                 }
             }
-            else if (students[index] is Gradstudent)
+            else if (students[index] is Gradstudent theGradStudent)
             {
-                Console.WriteLine("Gradstudent");
-                var theGradStudent = (Gradstudent)students[index]; // Casting as an Gradstudent so I can use the get / set for Gradstudent     
+                //Console.WriteLine("Gradstudent");
+                //var theGradStudent = (Gradstudent)students[index]; // Casting as an Gradstudent so I can use the get / set for Gradstudent     
                 // Making a defensive copy of the current record in the event that the user only updates one field.
                 // This way all the data isnt wiped out when saved.
                 string newFirstName = theGradStudent.FirstName;
@@ -648,14 +669,14 @@ Currently Editting: {theStudent.FirstName} {theStudent.LastName}
                             break;
                         //case 'G':
                         //case 'g':
-                            //Console.Write("Enter new GPA: ");
-                            //newGPA = float.Parse(Console.ReadLine());
+                        //Console.Write("Enter new GPA: ");
+                        //newGPA = float.Parse(Console.ReadLine());
                         //    break;
                         //case 'C':
                         //case 'c':
-                            //Console.Write("Enter new credits earned: ");
-                            //newCreditsEarned = int.Parse(Console.ReadLine());
-                            //break;
+                        //Console.Write("Enter new credits earned: ");
+                        //newCreditsEarned = int.Parse(Console.ReadLine());
+                        //break;
                         default:
                             Console.WriteLine("** ERROR: Incorrect selection. Please try again **");
                             Thread.Sleep(1000);// Sleep so the user can see the error message
@@ -1039,24 +1060,30 @@ Tuition Credit: {tuitionCredit}
         //POSTCONDITIONS - 
         public void TestMain()
         {
-            // make some objects of type Student
-            //Student stu01 = new Student();
+            //Student stu01 = new Student(first name, last name, email address);
             Student stu01 = new Student("Ralph", "Crouch", "crouch@uw.edu");
             Student stu02 = new Student("Ewen", "Bullock", "bullock@gmail.com");
             Student stu03 = new Student("Nisha", "Brewer", "brewer@yahoo.com");
             Student stu04 = new Student("Milo","Estes","estes@gmail.com");
-           
-            //Student und01 = new Undergrad();
+
+            //Student und01 = new Undergrad(first name, last name, email address, GPA, Year rank);
             Student und01 = new Undergrad("James", "Martin", "jmsnmrtn@uw.edu", 3.6f, YearRank.Junior);
             Student und02 = new Undergrad("Vick", "Vinegar", "vinegar@icloud.com", 2.1f, YearRank.Freshman);
             Student und03 = new Undergrad("Hugh", "Honey", "honey@live.com", 1.5f, YearRank.Sophomore);
             Student und04 = new Undergrad("Ronald", "McDonald", "mcdonald@aol.com", 4.0f, YearRank.Senior);
 
-            //Student grd01 = new Gradstudent();
+            //Student grd01 = new Gradstudent(first name, last name, email address, advisor, tuition credit);
             Student grd01 = new Gradstudent("Bob", "Bobman", "bobman@uw.edu", "Dr. Donald Chin", 1111.99m);
             Student grd02 = new Gradstudent("Vinnie","Zimmerman","Zimmerman@uw.edu","Dr. Steve Branch",2222.99m);
             Student grd03 = new Gradstudent("Clark","Gilmore","gilmore@uw.edu","Dr. Darla Summers",3333.99m);
             Student grd04 = new Gradstudent("Missy","Monroe","monroe@uw.edu","Dr. Patys Cain",4444.99m);
+
+            //Student phd01 = new PhDStudent(first name, last name, email address, advisor, tuition credit, thesis, total publications, publications as author);
+            Student phd01 = new PhDStudent("Eilish","McClain","emclain@uw.edu","Dr. Marcus Fitzgerald",1111.22m,"Biology",1,2);
+            Student phd02 = new PhDStudent("Lenny", "Hopper", "lhopper@uw.edu", "Dr. Saoirse Cobb", 2222.33m, "Robotics", 1, 2);
+            Student phd03 = new PhDStudent("Keelan", "Vasquez", "kvasquez@uw.edu", "Dr. Ava-May Wyatt", 3333.44m, "Physics", 1, 2);
+            Student phd04 = new PhDStudent("Eve", "Pitts", "epitts@uw.edu", "Dr. Maximillian Anthony", 4444.55m, "Business", 1, 2);
+            
             // Add all created students
             students.Add(stu01);
             students.Add(stu02);
@@ -1070,6 +1097,10 @@ Tuition Credit: {tuitionCredit}
             students.Add(grd02);
             students.Add(grd03);
             students.Add(grd04);
+            students.Add(phd01);
+            students.Add(phd02);
+            students.Add(phd03);
+            students.Add(phd04);
         }
     }
 }

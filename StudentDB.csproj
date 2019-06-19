@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'IoT|AnyCPU'">
+    <OutputPath>bin\IoT\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,6 +48,7 @@
   <ItemGroup>
     <Compile Include="DatabaseApp.cs" />
     <Compile Include="Gradstudent.cs" />
+    <Compile Include="PhDStudent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Student.cs" />
     <Compile Include="Undergrad.cs" />

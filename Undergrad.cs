@@ -28,10 +28,6 @@
 //                                    Got project ready for submission
 //                                    Final push to github
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StudentDB
 {
@@ -63,7 +59,7 @@ namespace StudentDB
             Rank = rank;
         }
         // I didnt use base.ToString() here because I like the formatting better the way I did it here.
-        // Otherwise the data I wanted at the bottom would be on the top and was no in the right order 
+        // Otherwise the data I wanted at the bottom would be on the top and was not in the right order 
         // or format.
         public override string ToString()
         {
